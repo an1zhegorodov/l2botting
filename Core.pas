@@ -10,8 +10,10 @@ interface
     TL2Path = array of TL2Coord;
     TL2MenuPath = array of string;
 
+  function Coord(Const X, Y, Z: integer): TL2Coord;
   function ToVillageIfDead: Boolean;
   function ToVillageIfNoBuff(BuffName: string): Boolean;
+  function InVillage(villageName: string): Boolean;
   procedure GoToGateKeeper(villageName: string);
   procedure Teleport(Npc: TL2Npc; MenuPath: TL2MenuPath);
   procedure ApplyBuff(Npc: TL2Npc; MenuPath: TL2MenuPath);
@@ -20,16 +22,24 @@ interface
 
 implementation
 
+  function Coord(Const X, Y, Z: integer): TL2Coord;
+  begin
+    Result[0] := X;
+    Result[1] := Y;
+    Result[2] := Z;
+  end;
+
   function ToVillageIfDead: Boolean;
   begin
     Result:=false;
     if User.Dead then
     begin
-        Result:=true;
-        Engine.Delay(1000);
-        Engine.FaceControl(0, false);
-        Engine.GoHome();
-        Engine.Delay(10000);
+      print('Character dead');
+      Result:=true;
+      Engine.Delay(1000);
+      Engine.FaceControl(0, false);
+      Engine.GoHome();
+      Engine.Delay(10000);
     end;
   end;
 
@@ -39,10 +49,21 @@ implementation
     Result := false;
     if not User.Buffs.ByName(BuffName, Buff) or (Buff.EndTime < 30000) then
     begin
+      print('Character has no buff');
       Result := true;
       Engine.FaceControl(0, false);
       Engine.Unstuck();
       Engine.Delay(20000);
+    end;
+  end;
+
+  function InVillage(villageName: string): Boolean;
+  begin
+    Result := false;
+    if (villageName = 'Rune') and User.InRange(43827,-47698,-794, 10000, 2000) then
+    begin
+      print('Character is in village');
+      Result := true;
     end;
   end;
 
@@ -52,6 +73,7 @@ implementation
     //Rune
     if villageName = 'Rune' then
     begin
+      print('Going to Rune gatekeeper');
       if User.inrange(38608,-47168,896, 250, 150)
       or User.inrange(38272,-49008,896, 250, 150)
       or User.inrange(38752,-47792,896, 250, 150)
@@ -63,12 +85,17 @@ implementation
 
         NpcList.ByID(31698,NPC);
         Engine.SetTarget(NPC);
+        Engine.Delay(1000);
         Engine.DlgOpen;
+        Engine.Delay(1000);
         Engine.DlgSel(1);
-        Engine.DlgSel(1);  
+        Engine.Delay(1000);
+        Engine.DlgSel(1);
+        Engine.Delay(1000); 
         Engine.CancelTarget;
         Delay(3000);
 
+        Engine.MoveTo(38312, -48232, -1152);
         Engine.MoveTo(39522,-48234,-784);
         Engine.MoveTo(41591,-48221,-801);
         Engine.MoveTo(43323,-48185,-795);
@@ -134,6 +161,7 @@ implementation
   procedure ApplyBuff(Npc: TL2Npc; MenuPath: TL2MenuPath);
   var Entry: string;
   begin
+    print('Applying buff profile');
     Engine.SetTarget(Npc);
     Engine.MoveToTarget();
     Engine.Delay(3000);
@@ -150,6 +178,7 @@ implementation
   procedure Teleport(Npc: TL2Npc; MenuPath: TL2MenuPath);
   var Entry: string;
   begin
+    print('Teleporting closer to the spot');
     Engine.SetTarget(Npc);
     Engine.DlgOpen();
     Engine.Delay(300);
@@ -169,6 +198,7 @@ implementation
     Result := false;
     if User.InRange(CheckPoint[0], CheckPoint[1], CheckPoint[2], 150) then
     begin
+      print('Going to spot');
       Engine.LoadZone(MapName);
       Engine.FaceControl(0, true);
       for i := 0 to High(Path) do
@@ -183,6 +213,7 @@ implementation
 
   procedure Farm;
   begin
+    print('Starting farm');
     Engine.FaceControl(0, true);
   end;
 
