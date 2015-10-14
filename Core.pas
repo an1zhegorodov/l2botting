@@ -46,9 +46,9 @@ implementation
     end;
   end;
 
-	procedure GoToGateKeeper(villageName: string);
+  procedure GoToGateKeeper(villageName: string);
   var NPC: TL2Npc;
-	begin
+  begin
     //Rune
     if villageName = 'Rune' then
     begin
