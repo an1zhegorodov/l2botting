@@ -49,9 +49,9 @@ implementation
 	procedure GoToGateKeeper(villageName: string);
   var NPC: TL2Npc;
 	begin
-		//Rune
-		if villageName = 'Rune' then
-		begin
+    //Rune
+    if villageName = 'Rune' then
+    begin
       if User.inrange(38608,-47168,896, 250, 150)
       or User.inrange(38272,-49008,896, 250, 150)
       or User.inrange(38752,-47792,896, 250, 150)
@@ -128,8 +128,8 @@ implementation
         Engine.MoveTo(43744,-47920,-792); 
         Engine.MoveTo(43827,-47698,-794);
       end;
-		end;
-	end;
+    end;
+  end;
 
   procedure ApplyBuff(Npc: TL2Npc; MenuPath: TL2MenuPath);
   var Entry: string;
